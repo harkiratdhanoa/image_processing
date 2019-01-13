@@ -14,7 +14,7 @@ Matrix Matrix_Read(string filename)
 	myfile.open(filename);
 	int count = 0;
 	float temp;
-	while((myfile.peek()!='\n') && (myfile>>temp)){
+	while((myfile>>temp)){
 		count++;
 	}
 	myfile.close();
@@ -75,7 +75,7 @@ Matrix Filter_Mult_Form(Matrix* filter)
 	Matrix filter_mult_form(size*size, row(1));
 	for(int i = 0; i<size; i++){
 		for(int j = 0; j<size; j++){
-			filter_mult_form[(j*size) + i][0] = (*filter)[i][j];
+			filter_mult_form[((size-i-1)*size) + (size-j-1)][0] = (*filter)[i][j];
 		}
 	}
 	return filter_mult_form;
@@ -110,9 +110,9 @@ Matrix Matrix_Mult(Matrix* m1, Matrix* m2)
 Matrix Padded_Image(Matrix* image, int border, int image_row_no, int image_column_no)
 {
 	Matrix padded_image(image_row_no, row(image_column_no));
-	for(int i = 0; i<image_row_no-2*border; i++){
-		for(int j = 0; j<image_column_no-2*border;j++){
-			if(i<border || i>image_row_no + border+1||j<border || j>image_column_no + border+1)
+	for(int i = 0; i<image_row_no; i++){
+		for(int j = 0; j<image_column_no;j++){
+			if(i<border || i>image_row_no - border-1||j<border || j>image_column_no - border-1)
 				padded_image[i][j] = 0;
 			else
 				padded_image[i][j] = (*image)[i-border][j-border];
@@ -156,11 +156,11 @@ Matrix convolution(Matrix* image, Matrix* filter, bool padded = true, bool mult 
 	}
 	else
 	{
-		for(int i = 0; i<image_row_no-2*border; i++){
-			for(int j = 0; j<image_column_no-2*border;j++){
-				for(int k = 0; k<filter_size; k++){
-					for(int l = 0; l<filter_size;l++){
-						result[i][j] = result[i][j] + (*image)[i+k][j+l]* (*filter)[filter_size-k-1][filter_size-l-1];
+		for(int i = border; i<image_row_no-border; i++){
+			for(int j = border; j<image_column_no-border;j++){
+				for(int k = -border; k<border+1; k++){
+					for(int l = -border; l<border+1;l++){
+						result[i-border][j-border] = result[i-border][j-border] + (*image)[i+k][j+l]* (*filter)[-k+border][-l+border];
 					}
 				}
 			}
@@ -195,22 +195,32 @@ int main()
 {
 	Matrix m = Matrix_Read("image.txt");
 	Matrix m2 = Matrix_Read("filter.txt");
-	Matrix result = convolution(&m, &m2, false, true);
 	
-	/*Matrix Image = Image_Mult_Form(&m, m2.size());
-	Matrix Filter = Filter_Mult_Form(&m2); 
-	Matrix result = Matrix_Mult(&Image, &Filter);
-	result = Reverse_Mat_Mult_Form(&result, 2, 2);*/
-	ofstream outfile;
-	outfile.open("fil_image.txt");
-	for(int j = 0; j<result[0].size(); j++){
-		for(int i = 0; i<result.size(); i++){
-			outfile << result[i][j];
-			outfile << " ";
+	Matrix result = convolution(&m, &m2, true, false);
+	
+	for(int i = 0; i<result.size(); i++){
+		for(int j = 0; j<result[0].size(); j++){
+			cout << result[i][j];
+			cout << " ";
 		}
-		outfile << "\n";
+		cout << "\n";
 	}
-	outfile.close();
+	cout << "\n";
+	for(int i = 0; i<m.size(); i++){
+		for(int j = 0; j<m[0].size(); j++){
+			cout << m[i][j];
+			cout << " ";
+		}
+		cout << "\n";
+	}
+	cout << "\n";
+	for(int i = 0; i<m2[0].size(); i++){
+		for(int j = 0; j<m2.size(); j++){
+			cout << m2[i][j];
+			cout << " ";
+		}
+		cout << "\n";
+	}
 	
 	
 	return 0;
