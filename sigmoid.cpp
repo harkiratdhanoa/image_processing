@@ -48,7 +48,7 @@ Matrix maxPooling(Matrix image, int stride){
     for(int i = 0; i<image.size()/stride;i++){
         row r;
         maxpooled.push_back(r);
-         for(int j = 0; i<image[0].size();i++){
+         for(int j = 0; j<image[0].size()/stride;j++){
              maxpooled[i].push_back(image[i][j]);
               for(int t = 0; t<stride;t++)
                   for(int s = 0; s<stride;s++)
@@ -78,7 +78,7 @@ Matrix avgPooling(Matrix image, int stride){
     for(int i = 0; i<image.size()/stride;i++){
         row r;
         avgpooled.push_back(r);
-        for(int j = 0; i<image[0].size();i++){
+        for(int j = 0; j<image[0].size()/stride;j++){
             avgpooled[i].push_back(0.0);
             for(int t = 0; t<stride;t++)
                 for(int s = 0; s<stride;s++)
