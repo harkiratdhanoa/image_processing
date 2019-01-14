@@ -42,9 +42,13 @@ Vector Vector_Read(string filename)
 	ifstream myfile;
 	myfile.open(filename);
 	Vector v;
-	while(myfile >> temp){
-		v.push_back(temp);	//keep adding the reaed numbers (using dynamic property of C++ vector
+	if(!myfile.fail()){
+		while(myfile >> temp){
+			v.push_back(temp);	//keep adding the reaed numbers (using dynamic property of C++ vector
+		}
+		myfile.close();
+		return v;
 	}
-	myfile.close();
-	return v;
+	else
+		throw 20;
 }
