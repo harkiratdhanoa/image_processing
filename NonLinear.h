@@ -7,29 +7,4 @@ using namespace std;
 typedef vector<float> row;
 typedef vector<row> Matrix;
 typedef vector<float> Vector;
-
-
-Matrix NonLinear(Matrix* image, bool select)
-{
-	Matrix result((*image).size(), row((*image)[0].size()));
-	if(select)
-	{
-		for(int i = 0; i<(*image).size();i++){
-			for(int j = 0; j<(*image)[0].size(); j++){
-				if((*image)[i][j] < 0)
-					result[i][j] = 0;
-				else
-					result[i][j] = (*image)[i][j];
-			}
-		}
-	}
-	else
-	{
-		for(int i = 0; i<(*image).size();i++){
-			for(int j = 0; j<(*image)[0].size(); j++){
-				result[i][j] = tanh((*image)[i][j]);
-			}
-		}
-	}
-	return result;
-}
+Matrix NonLinear(Matrix* image, bool select);
